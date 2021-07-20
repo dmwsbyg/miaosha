@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @MapperScan("com.example.demo.dao")
 public class DemoApplication {
-
+// 测试git
     @Autowired
     private UserDoMapper userDoMapper;
 
