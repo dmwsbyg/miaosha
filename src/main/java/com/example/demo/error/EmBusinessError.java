@@ -5,10 +5,11 @@ import com.example.demo.response.CommonReturnType;
 public enum EmBusinessError implements CommonError {
 
     //通用错误类型00001
-    PARAMETER_VALIDATION_ERROR(00001,"参数不合法"),
+    PARAMETER_VALIDATION_ERROR(10001,"参数不合法"),
+    UNKNOWN_ERROR(10002,"未知错误"),
 
     //10000开头的为用户信息相关错误定义
-    USER_NOT_EXIST(10001,"用户不存在");
+    USER_NOT_EXIST(20001,"用户不存在");
     ;
 
     private EmBusinessError(int errCode,String errMsg){

@@ -1,6 +1,8 @@
 package com.example.demo.service.model;
 
 public class UserModel {
+    //model类才是springMVC 业务逻辑交互的模型的概念
+
     private Integer id;
     private String name;
     private Integer gender;

@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         UserModel userModel = new UserModel();
-        BeanUtils.copyProperties(userDo,userModel);//从userModel对象复制属性到userDo对象
+        BeanUtils.copyProperties(userDo,userModel);//从userDo对象复制属性到userModel对象
 
 
         if (userPasswordDo != null){
