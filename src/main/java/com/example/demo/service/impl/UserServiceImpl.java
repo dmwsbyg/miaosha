@@ -4,11 +4,15 @@ import com.example.demo.DataObject.UserDo;
 import com.example.demo.DataObject.UserPasswordDo;
 import com.example.demo.dao.UserDoMapper;
 import com.example.demo.dao.UserPasswordDoMapper;
+import com.example.demo.error.BusinessException;
+import com.example.demo.error.EmBusinessError;
 import com.example.demo.service.UserService;
 import com.example.demo.service.model.UserModel;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 
@@ -31,6 +35,47 @@ public class UserServiceImpl implements UserService {
         //通过用户id获取对应的用户加密密码信息
         UserPasswordDo userPasswordDo = userPasswordDoMapper.selectByUserId(userDo.getId());
         return convertFromDataObject(userDo,userPasswordDo);
+    }
+
+    @Override
+    @Transactional
+    public void register(UserModel userModel) throws BusinessException {
+        if (userModel == null){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+        if (StringUtils.isNotEmpty(userModel.getName())
+        || userModel.getGender() == null
+        || userModel.getAge() == null
+        || StringUtils.isEmpty(userModel.getTelphone())){
+            throw new BusinessException((EmBusinessError.PARAMETER_VALIDATION_ERROR));
+        }
+//        UserDo userDo = new UserDo();
+
+        //实现model->dataobject方法
+        UserDo userDo = convertFromModel(userModel);
+        userDoMapper.insertSelective(userDo);//用insertSelective方法在.xml文件中插入时会自动判断字段是否为空，为空的话会使用数据库默认值不会用null
+
+        UserPasswordDo userPasswordDo = convertPasswordFromModel(userModel);
+        userPasswordDoMapper.insertSelective(userPasswordDo);
+    }
+
+    private UserPasswordDo convertPasswordFromModel(UserModel userModel){
+        if (userModel == null){
+            return null;
+        }
+        UserPasswordDo userPasswordDo = new UserPasswordDo();
+        userPasswordDo.setEncrptPassword(userModel.getEncrptPassword());
+        userPasswordDo.setUserId(userModel.getId());
+        return userPasswordDo;
+    }
+
+    private UserDo convertFromModel(UserModel userModel){
+        if (userModel == null){
+            return null;
+        }
+        UserDo userDo = new UserDo();
+        BeanUtils.copyProperties(userModel,userDo);
+        return userDo;
     }
 
     private UserModel convertFromDataObject(UserDo userDo, UserPasswordDo userPasswordDo){

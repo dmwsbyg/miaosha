@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
+import com.alibaba.druid.util.StringUtils;
 import com.example.demo.controller.viewobject.UserVO;
 import com.example.demo.error.BusinessException;
 import com.example.demo.error.EmBusinessError;
 import com.example.demo.response.CommonReturnType;
 import com.example.demo.service.UserService;
 import com.example.demo.service.model.UserModel;
+import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,33 @@ public class UserController extends BaseController{
 
     @Autowired
     private HttpServletRequest httpServletRequest;
+
+    //用户注册接口
+    @RequestMapping(value = "/register",method = RequestMethod.POST)
+    @ResponseBody
+    public CommonReturnType register(@RequestParam(name = "telphone")String telphone,
+                                     @RequestParam(name = "otpCode")String otpCode,
+                                     @RequestParam(name = "name")String name,
+                                     @RequestParam(name = "gender")Integer gender,
+                                     @RequestParam(name = "age")Integer age,
+                                     @RequestParam(name = "password")String password) throws BusinessException {
+        //验证手机号和对应的otpcode相符合
+        String inSessionOtpCode = (String) this.httpServletRequest.getSession().getAttribute(telphone);
+        if (StringUtils.equals(otpCode,inSessionOtpCode)){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"短信验证码不符合");
+        }
+        //用户的注册流程
+        UserModel userModel = new UserModel();
+        userModel.setName(name);
+        userModel.setGender(gender);
+        userModel.setAge(age);
+        userModel.setTelphone(telphone);
+        userModel.setRegisterMode("byphone");
+        userModel.setEncrptPassword(MD5Encoder.encode(password.getBytes())); //MD5Encoder给密码加密
+
+        userService.register(userModel);
+        return CommonReturnType.create(null);
+    }
 
     //用户获取otp短信接口
     @RequestMapping(value = "/getotp",method = RequestMethod.POST)
