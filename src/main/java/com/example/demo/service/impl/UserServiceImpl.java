@@ -43,7 +43,9 @@ public class UserServiceImpl implements UserService {
         if (userModel == null){
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
         }
-        if (StringUtils.isNotEmpty(userModel.getName())
+        System.out.println("StringUtils.isEmpty(userModel.getTelphone())="+StringUtils.isEmpty(userModel.getTelphone()));//判断对象是否为空
+        System.out.println("StringUtils.isNotEmpty(userModel.getName()="+StringUtils.isEmpty(userModel.getName()));
+        if (StringUtils.isEmpty(userModel.getName())
         || userModel.getGender() == null
         || userModel.getAge() == null
         || StringUtils.isEmpty(userModel.getTelphone())){
@@ -75,6 +77,7 @@ public class UserServiceImpl implements UserService {
         }
         UserDo userDo = new UserDo();
         BeanUtils.copyProperties(userModel,userDo);
+
         return userDo;
     }
 
