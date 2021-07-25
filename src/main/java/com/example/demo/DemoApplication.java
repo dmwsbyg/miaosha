@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication(scanBasePackages = {"com.example.demo"})    //等价于以默认属性使用@Configuration ， @EnableAutoConfiguration 和 @ComponentScan
+//扫描com.example.demo下的注释
 //@EnableAutoConfiguration  //开启自动配置
 @RestController
+@ServletComponentScan   //删除之后不会执行CorsFilter  使用该注解后 Servler(控制器)， Filter(过滤器)， Listener(监听器) 可以直接通过 @WebServlet, @WebFilter, @WebListener注解自动注册到Spring容器中
 @MapperScan("com.example.demo.dao")
 public class DemoApplication {
 // 测试git11

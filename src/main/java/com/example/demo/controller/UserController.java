@@ -25,14 +25,16 @@ import java.util.Random;
 
 @Controller("user")
 @RequestMapping("/user")
-@CrossOrigin  //解决跨越问题
+//@CrossOrigin  //解决跨越问题
 //@CrossOrigin(allowCredentials = "true",allowedHeaders = "*")  //做session共享的跨越请求
+//@CrossOrigin(origins = {"http://localhost:8080", "null"})
+//@CrossOrigin(allowedHeaders = "*", allowCredentials = "true", origins = {"http://127.0.0.1:8080/"})
 public class UserController extends BaseController{
 
     @Autowired
     private UserService userService;
 
-    @Autowired
+    @Autowired   //初始化对象
     private HttpServletRequest httpServletRequest;
 
     //用户注册接口
@@ -45,8 +47,10 @@ public class UserController extends BaseController{
                                      @RequestParam(name = "age")Integer age,
                                      @RequestParam(name = "password")String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
         //验证手机号和对应的otpcode相符合
-        String inSessionOtpCode = (String) this.httpServletRequest.getSession().getAttribute(telphone);
-        if (StringUtils.equals(otpCode,inSessionOtpCode)){
+        String inSessionOtpCode = (String) this.httpServletRequest
+                .getSession()
+                .getAttribute(telphone);
+        if (!StringUtils.equals(otpCode,inSessionOtpCode)){
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"短信验证码不符合");
         }
         //用户的注册流程
@@ -83,10 +87,10 @@ public class UserController extends BaseController{
         String otpCode = String.valueOf(randomInt);
 
 
-        //将OTP验证码同对应用户的手机号关联,使用httpsession的方式绑定他的手机号与otpcode
+        //将OTP验证码同对应用户的手机号关联,使用httpsession的方式绑定他的手机号与otpcode 比如现在 断点是在这里， 用step over会执行到下面的system.out
         httpServletRequest.getSession().setAttribute(telphone,otpCode);
 
-
+// 点step into就会进入到你这行代码调用的方法里面，比如现在这行代码调用的是setAttribute方法
         //将OTP验证码通过短信通道发送给用户,省略
         System.out.println("telphone = "+telphone+" & otpCode = "+otpCode);
 

@@ -11,6 +11,7 @@ import com.example.demo.service.model.UserModel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserPasswordDoMapper userPasswordDoMapper;
 
-    @Override
+    @Override  //
     public UserModel getUserById(Integer id) {
         //调用userdomapper获取对应的用户dataobject
         UserDo userDo = userDoMapper.selectByPrimaryKey(id);
@@ -55,7 +56,13 @@ public class UserServiceImpl implements UserService {
 
         //实现model->dataobject方法
         UserDo userDo = convertFromModel(userModel);
-        userDoMapper.insertSelective(userDo);//用insertSelective方法在.xml文件中插入时会自动判断字段是否为空，为空的话会使用数据库默认值不会用null
+        try{
+            userDoMapper.insertSelective(userDo);//用insertSelective方法在.xml文件中插入时会自动判断字段是否为空，为空的话会使用数据库默认值不会用null
+        }catch (DuplicateKeyException ex){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,"该手机号已注册");
+        }
+
+        userModel.setId(userDo.getId());
 
         UserPasswordDo userPasswordDo = convertPasswordFromModel(userModel);
         userPasswordDoMapper.insertSelective(userPasswordDo);
