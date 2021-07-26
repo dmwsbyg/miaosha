@@ -17,7 +17,7 @@ public class BaseController {
 
     // throws
     //定义exceptionhandler 解决未被controller层吸收的exception异常
-    @ExceptionHandler(Exception.class)   //定义根类
+    @ExceptionHandler(Exception.class)   //定义根类  controller层抛出Exception异常就会执行以下方法
     @ResponseStatus(HttpStatus.OK)  //加载自定义异常类    HttpStatus.OK是http状态码  404不存在
     @ResponseBody
     public Object handlerException(HttpServletRequest request, Exception ex){

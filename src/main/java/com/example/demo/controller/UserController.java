@@ -37,6 +37,23 @@ public class UserController extends BaseController{
     @Autowired   //初始化对象
     private HttpServletRequest httpServletRequest;
 
+
+    @ResponseBody
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String test() throws Exception{
+//        String s = null;
+//        s.equals("1");
+//        try {
+//
+//        }
+
+        if(true) {
+            throw new Exception("hello world");
+        }
+        return "sbsbsbsbsb";
+    }
+
+
     //用户注册接口
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     @ResponseBody
