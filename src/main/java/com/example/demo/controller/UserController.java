@@ -29,7 +29,7 @@ import java.util.Random;
 //@CrossOrigin(allowCredentials = "true",allowedHeaders = "*")  //做session共享的跨越请求
 //@CrossOrigin(origins = {"http://localhost:8080", "null"})
 //@CrossOrigin(allowedHeaders = "*", allowCredentials = "true", origins = {"http://127.0.0.1:8080/"})
-public class UserController extends BaseController{
+public class UserController extends BaseController{   //如果不继承BaseController类的话抛出的异常不会被BaseController类捕获
 
     @Autowired
     private UserService userService;
@@ -51,6 +51,28 @@ public class UserController extends BaseController{
             throw new Exception("hello world");
         }
         return "sbsbsbsbsb";
+    }
+
+
+    //用户登入接口
+    @RequestMapping(value = "/login",method = RequestMethod.POST)
+    @ResponseBody
+    public CommonReturnType login(@RequestParam(name = "telphone")String telphone,
+                                  @RequestParam(name = "password")String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+
+        //入参校验 手机号 密码不能为空
+        if (StringUtils.isEmpty(telphone) || StringUtils.isEmpty(password)){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+
+        //用户登入服务，用来校验用户登入是否合法
+        UserModel userModel = userService.validateLogin(telphone,this.EncodeByMd5(password));
+
+        //将登入凭证加入到用户登入成功的session内
+        this.httpServletRequest.getSession().setAttribute("IS_LOGIN",true);
+        this.httpServletRequest.getSession().setAttribute("LOGIN_USER",userModel);
+
+        return CommonReturnType.create(null);
     }
 
 

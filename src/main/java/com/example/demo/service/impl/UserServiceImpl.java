@@ -63,9 +63,29 @@ public class UserServiceImpl implements UserService {
         }
 
         userModel.setId(userDo.getId());
-
+//        if ()
+//        String s = null;
+//        s.equals("1");
         UserPasswordDo userPasswordDo = convertPasswordFromModel(userModel);
         userPasswordDoMapper.insertSelective(userPasswordDo);
+    }
+
+    @Override
+    public UserModel validateLogin(String telphone, String encrptPassword) throws BusinessException {
+        //通过用户手机号获取用户信息
+        UserDo userDo = userDoMapper.selectByTelphone(telphone);
+        if (userDo == null){
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
+        }
+        UserPasswordDo userPasswordDo = userPasswordDoMapper.selectByUserId(userDo.getId());
+        UserModel userModel = convertFromDataObject(userDo,userPasswordDo);
+
+        //比对用户信息内加密的密码是否和传输进来的密码相匹配
+        if (!StringUtils.equals(encrptPassword,userModel.getEncrptPassword())){
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
+        }
+        return userModel;
+
     }
 
     private UserPasswordDo convertPasswordFromModel(UserModel userModel){
