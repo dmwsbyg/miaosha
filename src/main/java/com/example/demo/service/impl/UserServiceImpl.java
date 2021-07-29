@@ -8,6 +8,8 @@ import com.example.demo.error.BusinessException;
 import com.example.demo.error.EmBusinessError;
 import com.example.demo.service.UserService;
 import com.example.demo.service.model.UserModel;
+import com.example.demo.validator.ValidationResult;
+import com.example.demo.validator.ValidatorImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserPasswordDoMapper userPasswordDoMapper;
+
+    @Autowired
+    private ValidatorImpl validator;
 
     @Override  //
     public UserModel getUserById(Integer id) {
@@ -46,12 +51,19 @@ public class UserServiceImpl implements UserService {
         }
         System.out.println("StringUtils.isEmpty(userModel.getTelphone())="+StringUtils.isEmpty(userModel.getTelphone()));//判断对象是否为空
         System.out.println("StringUtils.isNotEmpty(userModel.getName()="+StringUtils.isEmpty(userModel.getName()));
-        if (StringUtils.isEmpty(userModel.getName())
-        || userModel.getGender() == null
-        || userModel.getAge() == null
-        || StringUtils.isEmpty(userModel.getTelphone())){
-            throw new BusinessException((EmBusinessError.PARAMETER_VALIDATION_ERROR));
+//        if (StringUtils.isEmpty(userModel.getName())
+//        || userModel.getGender() == null
+//        || userModel.getAge() == null
+//        || StringUtils.isEmpty(userModel.getTelphone())){
+//            throw new BusinessException((EmBusinessError.PARAMETER_VALIDATION_ERROR));
+//        }
+        ValidationResult result = validator.validate(userModel);
+        if (result.isHasErrors()){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,result.getErrMsg());
         }
+
+
+
 //        UserDo userDo = new UserDo();
 
         //实现model->dataobject方法
