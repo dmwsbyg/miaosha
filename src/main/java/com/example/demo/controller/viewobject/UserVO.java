@@ -1,6 +1,7 @@
 package com.example.demo.controller.viewobject;
 
 public class UserVO {
+
     private Integer id;
     private String name;
     private Integer gender;
