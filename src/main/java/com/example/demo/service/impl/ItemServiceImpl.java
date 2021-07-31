@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -73,9 +74,21 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    //商品列表浏览
     public List<ItemModel> listItem() {
-        return null;
+        List<ItemDo> itemDoList = itemDoMapper.listItem();
+        List<ItemModel> itemModelList = itemDoList.stream().map(itemDo -> {
+            ItemStockDo itemStockDo = itemStockDoMapper.selectByItemId(itemDo.getId());
+            ItemModel itemModel = this.convertModelFromDataObject(itemDo, itemStockDo);
+            return itemModel;
+        }).collect(Collectors.toList());
+//        stream(): 把一个源数据，可以是集合，数组，I/O channel，产生器generator等，转化成流
+//        map(): 用于映射每个元素到对应的结果
+//        Collectors.toList() 用来结束Stream流
+        return itemModelList;
     }
+
+
 
     @Override
     public ItemModel getItemById(Integer id) {
