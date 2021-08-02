@@ -1,3 +1,5 @@
+
+//库存信息
 create table item_stock(
     -> id int not null auto_increment primary key,
     -> stock int not null default 0,
@@ -5,6 +7,7 @@ create table item_stock(
     -> );
 
 
+//商品信息
 create table item(
     -> id int not null auto_increment primary key,
     -> title varchar(64) not null default " ",
@@ -12,4 +15,15 @@ create table item(
     -> description varchar(500) not null default " ",
     -> sales int not null default 0,
     -> img_url varchar(64) not null default " "
+    -> );
+
+
+//订单信息
+create table order_info(
+    -> id varchar(32) not null primary key default " ",
+    -> user_id int(11) not null default 0,
+    -> item_id int(11) not null default 0,
+    -> item_price double not null default 0,
+    -> amount int(11) not null default 0,
+    -> order_price double not null default 0
     -> );

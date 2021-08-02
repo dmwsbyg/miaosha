@@ -11,6 +11,13 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 @SpringBootApplication(scanBasePackages = {"com.example.demo"})    //等价于以默认属性使用@Configuration ， @EnableAutoConfiguration 和 @ComponentScan
 //扫描com.example.demo下的注释
 //@EnableAutoConfiguration  //开启自动配置

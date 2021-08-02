@@ -50,10 +50,15 @@
 <!--           enableUpdateByExample="false" enableDeleteByExample="false"-->
 <!--           enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
 <!--        之后添加表的话需要把之前的添加表代码注释 不然会重复-->
-        <table tableName="item" domainObjectName="ItemDo" enableCountByExample="false"
-               enableUpdateByExample="false" enableDeleteByExample="false"
-               enableSelectByExample="false" selectByExampleQueryId="false"></table>
-        <table tableName="item_stock" domainObjectName="ItemStockDo" enableCountByExample="false"
+
+<!--        <table tableName="item" domainObjectName="ItemDo" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
+<!--        <table tableName="item_stock" domainObjectName="ItemStockDo" enableCountByExample="false"-->
+<!--               enableUpdateByExample="false" enableDeleteByExample="false"-->
+<!--               enableSelectByExample="false" selectByExampleQueryId="false"></table>-->
+
+        <table tableName="order_info" domainObjectName="OrderDo" enableCountByExample="false"
                enableUpdateByExample="false" enableDeleteByExample="false"
                enableSelectByExample="false" selectByExampleQueryId="false"></table>
     </context>

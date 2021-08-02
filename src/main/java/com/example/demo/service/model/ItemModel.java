@@ -41,7 +41,7 @@ public class ItemModel {
         this.id = id;
     }
 
-    public String getTitle() {
+    public String  getTitle() {
         return title;
     }
 
@@ -87,5 +87,18 @@ public class ItemModel {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "ItemModel{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", price=" + price +
+                ", stock=" + stock +
+                ", description='" + description + '\'' +
+                ", sales=" + sales +
+                ", imgUrl='" + imgUrl + '\'' +
+                '}';
     }
 }
