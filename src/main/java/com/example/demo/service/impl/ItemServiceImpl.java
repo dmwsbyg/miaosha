@@ -135,6 +135,13 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+    //商品销量增加
+    @Override
+    @Transactional
+    public void increaseSales(Integer itemId, Integer amount) throws BusinessException {
+        itemDoMapper.increaseSales(itemId,amount);
+    }
+
     private ItemModel convertModelFromDataObject(ItemDo itemDo,ItemStockDo itemStockDo){
         ItemModel itemModel = new ItemModel();
         BeanUtils.copyProperties(itemDo,itemModel);

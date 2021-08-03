@@ -27,3 +27,11 @@ create table order_info(
     -> amount int(11) not null default 0,
     -> order_price double not null default 0
     -> );
+
+
+//6位自增序列
+ create table sequence_info(
+    -> name varchar(64) not null primary key default " ",
+    -> current_value int(11) not null default 0,
+    -> step int(11) not null default 0
+    -> );

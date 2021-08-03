@@ -1,7 +1,9 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.DataObject.OrderDo;
+import com.example.demo.DataObject.SequenceDo;
 import com.example.demo.dao.OrderDoMapper;
+import com.example.demo.dao.SequenceDoMapper;
 import com.example.demo.error.BusinessException;
 import com.example.demo.error.EmBusinessError;
 import com.example.demo.service.ItemService;
@@ -13,6 +15,7 @@ import com.example.demo.service.model.UserModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -21,6 +24,9 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 public class OrderServiceImpl implements OrderService {
+
+    @Autowired
+    private SequenceDoMapper sequenceDoMapper;
 
     @Autowired
     private ItemService itemService;
@@ -64,14 +70,19 @@ public class OrderServiceImpl implements OrderService {
         orderModel.setOrderPrice(itemModel.getPrice().multiply(new BigDecimal(amount))); //订单总金额 单价*数量
 
         //生成交易单号
+        orderModel.setId(generateOrderNo());
         OrderDo orderDo = convertFromOrderModel(orderModel);
         orderDoMapper.insertSelective(orderDo);
 
+        //加上商品的销量
+        itemService.increaseSales(itemId,amount);
+
         //返回前端
-        return null;
+        return orderModel;
     }
 
-    private String generateOrderNo(){
+    @Transactional(propagation = Propagation.REQUIRES_NEW) //开启一个新的事务 执行完后直接提交 不需要外面的事务一定成功
+    String generateOrderNo(){
         //订单号16位
         StringBuilder stringBuilder = new StringBuilder(); //订单号16位拼接生成
 
@@ -82,10 +93,23 @@ public class OrderServiceImpl implements OrderService {
         stringBuilder.append(nowDate);
 
         //中间6位为自增序列
+        //获取当前sequence
+        int sequence = 0;
+        //每次取一次sequence之后 current_value 变为取走的加步长 step
+        SequenceDo sequenceDo = sequenceDoMapper.getSequenceByName("order_info");
+        sequence = sequenceDo.getCurrentValue();
+        sequenceDo.setCurrentValue(sequenceDo.getCurrentValue()+sequenceDo.getStep());
+        //然后调用方法将数据库更新
+        sequenceDoMapper.updateByPrimaryKeySelective(sequenceDo);
+        String sequenceStr = String.valueOf(sequence);
+        for (int i=0;i<6-sequenceStr.length();i++){
+            stringBuilder.append(0);
+        }//循环 不足六位的用0代替
+        stringBuilder.append(sequenceStr);
 
-        //最后两位分库分表位
-
-        return null;
+        //最后两位分库分表位 暂时写死
+        stringBuilder.append("00");
+        return stringBuilder.toString();
     }
 
     private OrderDo convertFromOrderModel(OrderModel orderModel){
@@ -94,6 +118,8 @@ public class OrderServiceImpl implements OrderService {
         }
         OrderDo orderDo = new OrderDo();
         BeanUtils.copyProperties(orderModel,orderDo);
+        orderDo.setItemPrice(orderModel.getItemPrice().doubleValue());
+        orderDo.setOrderPrice(orderModel.getOrderPrice().doubleValue());
         return orderDo;
     }
 }

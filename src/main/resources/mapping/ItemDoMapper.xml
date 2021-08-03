@@ -157,4 +157,11 @@
       img_url = #{imgUrl,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <update id="increaseSales" parameterType="com.example.demo.DataObject.ItemDo">
+
+    update item
+    set sales = sales + #{amount}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>
