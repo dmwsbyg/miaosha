@@ -9,7 +9,9 @@ import com.example.demo.dao.ItemStockDoMapper;
 import com.example.demo.error.BusinessException;
 import com.example.demo.error.EmBusinessError;
 import com.example.demo.service.ItemService;
+import com.example.demo.service.PromoService;
 import com.example.demo.service.model.ItemModel;
+import com.example.demo.service.model.PromoModel;
 import com.example.demo.validator.ValidationResult;
 import com.example.demo.validator.ValidatorImpl;
 import com.fasterxml.jackson.databind.util.JSONPObject;
@@ -37,6 +39,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private ItemStockDoMapper itemStockDoMapper;
+
+    @Autowired
+    private PromoService promoService;
 
     private ItemDo convertItemDoFromItemModel(ItemModel itemModel){
         if (itemModel == null){
@@ -118,6 +123,12 @@ public class ItemServiceImpl implements ItemService {
 
         //将dataobject -> model
         ItemModel itemModel = convertModelFromDataObject(itemDo, itemStockDo);
+
+        //获取活动商品信息
+        PromoModel promoModel = promoService.getPromoByItemId(itemModel.getId());
+        if (promoModel != null && promoModel.getStatus().intValue() != 3){
+            itemModel.setPromoModel(promoModel);
+        }
         return itemModel;
     }
 

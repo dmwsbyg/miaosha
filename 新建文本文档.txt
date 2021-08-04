@@ -35,3 +35,14 @@ create table order_info(
     -> current_value int(11) not null default 0,
     -> step int(11) not null default 0
     -> );
+
+
+//秒杀模型
+create table promo(
+    -> id int not null auto_increment primary key,
+    -> promo_name varchar(64) not null default ' ',
+    -> start_date datetime not null default '0000-00-00 00:00:00',
+    -> end_date datetime not null default '0000-00-00 00:00:00',
+    -> item_id int(11) not null default 0,
+    -> promo_item_price double not null default 0
+    -> );
